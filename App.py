@@ -35,7 +35,6 @@ def main():
     # Fetch content when URL is submitted
     if submit_button and url:
         st.success("Submitted!")
-        st.write(f"Fetching content from: {url}")
         
         content = asyncio.run(fetch_url_content(url))
         
@@ -47,9 +46,11 @@ def main():
             st.error("Unable to fetch the content.")
             st.session_state.content = None
 
-        # Display fetched content
-        if st.session_state.content:
-            st.text_area("Fetched Content:", value=st.session_state.content[:500] + "...", height=200)
+        # Display URL and fetched content in a folded box
+        with st.expander("View URL and Fetched Content", expanded=False):
+            st.write(f"Fetched content from: {url}")
+            if st.session_state.content:
+                st.text_area("Fetched Content:", value=st.session_state.content[:500] + "...", height=200)
 
     # Chat interface (only shown after content is fetched)
     if st.session_state.content:
