@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "oracle_search"
+version = "0.1.0"
+description = ""
+authors = ["tim-watcha <tim@watcha.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain = "^0.2.13"
+langchain-openai = "^0.1.21"
+langchain-community = "^0.2.12"
+streamlit = "^1.37.1"
+selenium = "^4.23.1"
+youtube-transcript-api = "^0.6.2"
+htmldate = "^1.8.1"
+loguru = "^0.7.2"
+beautifulsoup4 = "^4.12.3"
+trafilatura = "^1.12.0"
+html2text = "^2024.2.26"
+diskcache = "^5.6.3"
+readability-lxml = "^0.8.1"
+
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
