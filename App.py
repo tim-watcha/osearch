@@ -2,12 +2,10 @@ import streamlit as st
 import asyncio
 from aiohttp import ClientSession
 from oracle_search.web_loader.web_loader import WebContentExtractor
-from oracle_search.config import Config
-from oracle_search.shared import Shared
+from oracle_search import ExMachina
 
-# Initialize configuration and shared resources
-config = Config()
-Shared.init(config)
+# Bootstrap the application
+ExMachina.bootstrap()
 
 async def fetch_url_content(url: str):
     async with ClientSession() as session:
