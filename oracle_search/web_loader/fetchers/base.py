@@ -87,9 +87,13 @@ def cached_fetch(func):
                 return self.output_type.validate(cached_result)
 
         result = await func(self, *args, **kwargs)
-
-        web_cache.set(cache_key, result.dict(), expire=timedelta(days=1).total_seconds())
-        logger.info(f"{'Refreshed' if refresh else 'Cached'} result for {self.url}")
+        if result is not None:
+            try:
+                web_cache.set(cache_key, result.dict(), expire=timedelta(days=1).total_seconds())
+                logger.info(f"{'Refreshed' if refresh else 'Cached'} result for {self.url}")
+            except Exception as e:
+                trace = traceback.format_exc()
+                logger.error(f"Failed to cache result for {self.url}: {e}\n{trace}")
 
         return result
 

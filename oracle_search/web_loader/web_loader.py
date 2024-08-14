@@ -1,8 +1,10 @@
-
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from typing import Union, Optional
 from urllib.parse import urlparse
 
 from aiohttp import ClientSession
+
 from oracle_search.models.documents import YoutubeTranscript, WebContent
 from oracle_search.web_loader.fetchers.base import YOUTUBE_REGEX, DefaultWebFetcher
 from oracle_search.web_loader.fetchers.github import (
@@ -42,12 +44,16 @@ class WebContentExtractor:
 
     def __init__(self, url: str, session: ClientSession):
         self.fetcher = ContentFetcherFactory.create_fetcher(url, session)
+        self.loop = asyncio.new_event_loop()
 
     async def afetch(self, refresh=False) -> Union[WebContent, YoutubeTranscript]:
         return await self.fetcher.fetch(refresh=refresh)
 
     def fetch(self) -> Union[WebContent, YoutubeTranscript]:
-        # return asyncio.run(self.afetch())
-        # ThreadPoolExecutor 안에서 asyncio.run을 사용할 수 없으므로 일단 봉인
-        pass
+        with ThreadPoolExecutor() as executor:
+            future = executor.submit(self._run_in_executor)
+            return future.result()
 
+    def _run_in_executor(self):
+        asyncio.set_event_loop(self.loop)
+        return self.loop.run_until_complete(self.afetch())

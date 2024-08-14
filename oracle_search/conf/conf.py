@@ -3,6 +3,7 @@ from functools import cached_property
 from typing import Optional
 
 from diskcache import Cache
+from langchain_google_community import GoogleSearchAPIWrapper
 
 
 class GPT:
@@ -41,8 +42,21 @@ class DiskCache:
     def web_cache(self):
         return Cache(self.cache_dir)
 
+class GoogleSearch:
+    google_api_key: str
+    custom_search_engine_id: str
+
+    def __init__(self, config: dict[str, any]):
+        self.google_api_key = config["google_api_key"]
+        self.custom_search_engine_id = config["custom_search_engine_id"]
+
+    @cached_property
+    def search_engine(self):
+        return GoogleSearchAPIWrapper(google_api_key=self.google_api_key, google_cse_id=self.custom_search_engine_id)
+
 class Shared:
     gpt: Optional[GPT] = None
     open_ai: Optional[OpenAI] = None
     tmdb: Optional[TMDB] = None
     disk_cache: Optional[DiskCache] = None
+    google_search: Optional[GoogleSearch] = None
